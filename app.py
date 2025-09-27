@@ -148,8 +148,10 @@ def add_material_and_clear():
 
 st.set_page_config(layout="wide") # Para usar a tela toda
 
+caminho_imagem = "Assets/NestleDolceGusto.jpg"
+
 st.image(
-    "C:\\Users\\DELL\\Desktop\\meusprojetos\\4.BoletimOcorrência\\Assets\\NestleDolceGusto.jpg",
+    caminho_imagem,
     use_container_width=True
 )
 
