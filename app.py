@@ -167,7 +167,9 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
 
     # O método output retorna o conteúdo do PDF como bytes.
     # Corrigido o erro de codificação novamente, garantindo que retorne bytes.
-    pdf_output = pdf.output(dest="S")
+    pdf_bytes = pdf.output(dest="S")
+    pdf_output = io.BytesIO(pdf_bytes)
+
     return pdf_output
 
 # Função para converter Image PIL em objeto BytesIO que simula um uploaded_file
