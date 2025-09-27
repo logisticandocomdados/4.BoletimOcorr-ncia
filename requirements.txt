@@ -1,0 +1,4 @@
+pandas
+fpdf2
+Pillow
+streamlit-webrtc
