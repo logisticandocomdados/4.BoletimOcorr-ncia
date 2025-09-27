@@ -60,7 +60,7 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
 
     # Materiais da Ocorrência
     pdf.set_font("Arial", 'B', 12)
-    pdf.cell(200, 10, "Materiais Envolvidos:", ln=True)
+    pdf.cell(200, 10, "Materiais da Ocorrência:", ln=True)
     pdf.set_font("Arial", size=12)
     if not materiais:
         pdf.cell(200, 10, "Nenhum material adicionado.", ln=True)
@@ -143,9 +143,15 @@ def add_material_and_clear():
     else:
         st.error("Preencha todos os campos do material antes de adicionar.")
 
+
 # --- Configuração e Estado do Streamlit ---
 
 st.set_page_config(layout="wide") # Para usar a tela toda
+
+st.image(
+    "C:\\Users\\DELL\\Desktop\\meusprojetos\\4.BoletimOcorrência\\Assets\\NestleDolceGusto.jpg",
+    use_container_width=True
+)
 
 # Armazenamento dos materiais e fotos em uma lista na sessão do Streamlit
 if 'materiais' not in st.session_state:
@@ -153,18 +159,32 @@ if 'materiais' not in st.session_state:
 if 'fotos_capturadas' not in st.session_state:
     st.session_state.fotos_capturadas = []
 
+# Injetar CSS para centralizar a tag H1 (que é usada pelo st.title)
+st.markdown("""
+<style>
+.st-emotion-cache-16txto3 { /* Esta classe pode variar um pouco, mas é a mais comum para o container do st.title */
+    text-align: center;
+}     
+/* Opcional: Se o código acima não funcionar (devido a atualizações do Streamlit), tente este: */
+h1 {
+    width: 100%;
+    text-align: center;
+}
+            </style>
+""", unsafe_allow_html=True)
+
 st.title("Devolução Nestle")
 
 # --- Campos de dados da ocorrência ---
 st.header("Detalhes da Ocorrência")
 col1, col2 = st.columns(2)
 with col1:
-    data_ocorrencia = st.date_input("Data da Ocorrência")
+    data_ocorrencia = st.date_input("Data da Ocorrência", format="DD/MM/YYYY")
+    tipo_devolucao = st.selectbox("Tipo de Devolução", ["INSUCESSO","COLETA"])
     transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","JAD LOG","REDE SUL","LOGAN","FAST SERVICE","FAST SHOP", "DIALOGO" ])
     nota_fiscal = st.text_input("Nota Fiscal")
-    pedido = st.text_input("Pedido")
 with col2:
-    tipo_devolucao = st.selectbox("Tipo de Devolução", ["INSUCESSO", "COLETA"])
+    pedido = st.text_input("Pedido")
     delivery = st.text_input("Delivery")
     rastreio = st.text_input("Rastreio")
     st.text("") # Espaço para alinhar
@@ -202,7 +222,7 @@ with st.expander("Adicionar Material", expanded=True):
 if st.session_state.materiais:
     df_materiais = pd.DataFrame(st.session_state.materiais)
 
-    st.subheader("Lista de Materiais Adicionados:")
+    st.subheader("Materiais da Ocorrência:")
     edited_df = st.data_editor(
         df_materiais,
         use_container_width=True,
@@ -256,7 +276,7 @@ with col_capture:
 
 # Exibe as miniaturas das fotos capturadas
 if st.session_state.fotos_capturadas:
-    st.subheader("Miniaturas das Fotos Capturadas")
+    st.subheader("Galeria de Fotos")
     
     # Use um loop para criar uma coluna para cada foto capturada
     # Vamos usar colunas dinâmicas, limitando o máximo a 6 por linha
@@ -284,17 +304,16 @@ if st.session_state.fotos_capturadas:
 
 # --- Anexar Fotos ---
 st.markdown("---")
-st.header("...ou Anexar Fotos")
+st.header("Ou Anexar Fotos")
 
 # 1. Upload de Arquivos
 uploaded_files = st.file_uploader("Escolha as fotos para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
 # --- Finalizar ---
 st.markdown("---")
-st.header("Finalizar")
 
 # Botão para registrar a ocorrência e gerar o PDF
-if st.button("Registrar Ocorrência e Gerar PDF", type="primary", use_container_width=True):
+if st.button("Registrar Ocorrência", type="primary", use_container_width=True):
     if not st.session_state.materiais:
         st.error("Adicione pelo menos um material à ocorrência.")
     else:
