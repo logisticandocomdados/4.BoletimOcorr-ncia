@@ -169,7 +169,7 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
     # Corrigido o erro de codificação novamente, garantindo que retorne bytes.
     pdf_bytes = pdf.output(dest="S")
     pdf_output = io.BytesIO(pdf_bytes)
-
+    pdf_output.name = "Relatorio_Devolucao.pdf"
     return pdf_output
 
 # Função para converter Image PIL em objeto BytesIO que simula um uploaded_file
@@ -393,10 +393,11 @@ if st.button("Registrar Ocorrência", type="primary", use_container_width=True):
             )
             
             # Oferece o arquivo para download
+            nome_arquivo_pdf = f"Ocorrência-Devolução-{delivery}.pdf" 
             st.download_button(
                 label="Baixar PDF do Relatório",
                 data=pdf_file,
-                file_name=f"Relatorio_Devolucao_{nota_fiscal}_{data_ocorrencia.strftime('%Y%m%d')}.pdf",
+                file_name=nome_arquivo_pdf,
                 mime="application/pdf"
             )
             st.success("Ocorrência registrada e PDF gerado com sucesso!")
