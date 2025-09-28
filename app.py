@@ -345,6 +345,7 @@ if st.button("Registrar Ocorrência", type="primary", use_container_width=True):
             )
             
             # Oferece o arquivo para download
+            pdf_b64 = base64.b64encode(pdf_file.getvalue()).decode()
             nome_arquivo_pdf = f"Ocorrência-Devolução-{delivery}.pdf" 
             #st.download_button(
              #   label="Baixar PDF do Relatório",
