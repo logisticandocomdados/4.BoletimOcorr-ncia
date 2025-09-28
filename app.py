@@ -305,62 +305,11 @@ else:
 
 # --- Anexar Fotos ---
 st.markdown("---")
-st.header("Registrar ou Anexar Fotos")
+st.header("Registrar ou Anexar")
 
 # 1. Upload de Arquivos
 uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
-
-st.header("Registrar Fotos")
-st.info("Caso não haja opção de registrar foto no browse files, acione a câmera por aqui.")
-with st.expander("Acionar Câmera", expanded=False):
-  col_camera, col_capture = st.columns([3, 1])
-
-  with col_camera:
-      webrtc_ctx = webrtc_streamer(
-          key="camera", 
-          video_processor_factory=VideoProcessor, 
-          media_stream_constraints={"video": True, "audio": False}
-      )
-
-  with col_capture:
-      st.write("") # Espaçamento
-      st.write("") # Espaçamento
-      
-      if webrtc_ctx.video_processor:
-          latest_frame_av = webrtc_ctx.video_processor.latest_frame
-          
-          if st.button("Tirar Foto", use_container_width=True, type="secondary"):
-              if latest_frame_av:
-                  image_pil = latest_frame_av.to_image()
-                  st.session_state.fotos_capturadas.append(image_pil)
-                  st.success("Foto capturada!")
-              else:
-                  st.warning("Aguardando o stream da câmera... Tente novamente.")
-      else:
-          st.info("Câmera desligada ou aguardando permissão.")
-      
-  # Exibe as miniaturas das fotos capturadas
-  if st.session_state.fotos_capturadas:
-      st.subheader("Galeria de Fotos")
-      
-      num_fotos = len(st.session_state.fotos_capturadas)
-      max_cols = 6
-      cols = st.columns(min(num_fotos, max_cols))
-      
-      for i, img in enumerate(st.session_state.fotos_capturadas):
-          col_index = i % max_cols
-          
-          with cols[col_index]:
-              st.image(img, use_container_width=True)
-              
-              st.button(
-                  "❌ Excluir", 
-                  key=f"delete_photo_{i}",
-                  use_container_width=True,
-                  on_click=delete_captured_photo,
-                  args=(i,)
-              )
 
 # --- Finalizar ---
 st.markdown("---")
