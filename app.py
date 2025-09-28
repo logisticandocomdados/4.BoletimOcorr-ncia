@@ -316,7 +316,7 @@ uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da gale
 st.markdown("---")
 
 # Botão para registrar a ocorrência e gerar o PDF
-if st.button("Registrar Ocorrência", type="primary", use_container_width=True):
+if st.button("Salvar Fotos", type="primary", use_container_width=True):
     if data_ocorrencia and tipo_devolucao and transportadora and nota_fiscal and pedido and delivery and rastreio:
         if not st.session_state.materiais:
             st.error("Adicione pelo menos um material à ocorrência.")
@@ -346,25 +346,25 @@ if st.button("Registrar Ocorrência", type="primary", use_container_width=True):
             
             # Oferece o arquivo para download
             pdf_b64 = base64.b64encode(pdf_file.getvalue()).decode()
-            nome_arquivo_pdf = f"Ocorrência-Devolução-{delivery}.pdf" 
-            #st.download_button(
-             #   label="Baixar PDF do Relatório",
-              #  data=pdf_file,
-               # file_name=nome_arquivo_pdf,
-                #mime="application/pdf"
-            #)
+            nome_arquivo_pdf = f"B.O.-Pedido:{delivery}-Transportadora:{transportadora}.pdf" 
+            st.download_button(
+               label="Registrar Ocorrência",
+               data=pdf_file,
+               file_name=nome_arquivo_pdf,
+                mime="application/pdf"
+            )
 
-            html_download = f"""
-                <script>
-                    var link = document.createElement('a');
-                    link.setAttribute('href', 'data:application/pdf;base64,{pdf_b64}');
-                    link.setAttribute('download', '{nome_arquivo_pdf}');
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                </script>
-                """
-            st.markdown(html_download, unsafe_allow_html=True)
+            # html_download = f"""
+            #     <script>
+            #         var link = document.createElement('a');
+            #         link.setAttribute('href', 'data:application/pdf;base64,{pdf_b64}');
+            #         link.setAttribute('download', '{nome_arquivo_pdf}');
+            #         document.body.appendChild(link);
+            #         link.click();
+            #         document.body.removeChild(link);
+            #     </script>
+            #     """
+            # st.markdown(html_download, unsafe_allow_html=True)
             st.success("Ocorrência registrada e PDF gerado com sucesso!")
     else:
         st.error("Preencha todos os campos obrigatórios da ocorrência antes de registrar.")
