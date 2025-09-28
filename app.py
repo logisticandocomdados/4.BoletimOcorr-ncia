@@ -6,7 +6,6 @@ from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
 import av
 import io
 import os
-import base64 
 
 # --- Funções e Classes Auxiliares ---
 
@@ -22,6 +21,18 @@ class VideoProcessor(VideoProcessorBase):
         self.latest_frame = frame
         # Retorna o frame para ser exibido (se não for retornado, a webcam fica preta)
         return frame
+
+def clear_form_state():
+    """Limpa os estados do formulário após o download do PDF."""
+    st.session_state.materiais = []
+    
+    st.session_state.fotos_capturadas = []
+    
+    st.session_state["input_material"] = ""
+    st.session_state["input_lote"] = ""
+    st.session_state["input_quantidade"] = 1 # Volta para o valor padrão
+
+    st.rerun()
 
 def delete_captured_photo(index_to_delete):
     """Remove uma foto da lista de fotos capturadas pelo seu índice."""
@@ -351,7 +362,8 @@ if st.button("Salvar", type="primary", use_container_width=True):
                label="Registrar Ocorrência",
                data=pdf_file,
                file_name=nome_arquivo_pdf,
-                mime="application/pdf"
+               mime="application/pdf",
+               on_click=clear_form_state
             )
 
             # html_download = f"""
