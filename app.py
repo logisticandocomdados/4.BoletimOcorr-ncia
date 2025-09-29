@@ -32,7 +32,6 @@ def clear_form_state():
     st.session_state["input_lote"] = ""
     st.session_state["input_quantidade"] = 1 # Volta para o valor padrão
 
-    st.rerun()
 
 def delete_captured_photo(index_to_delete):
     """Remove uma foto da lista de fotos capturadas pelo seu índice."""
@@ -326,7 +325,7 @@ uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da gale
 # --- Finalizar ---
 st.markdown("---")
 
-# Botão para registrar a ocorrência e gerar o PDF
+# Botão para iniciar o processamento e gerar o PDF
 if st.button("Salvar", type="primary", use_container_width=True):
     if data_ocorrencia and tipo_devolucao and transportadora and nota_fiscal and pedido and delivery and rastreio:
         if not st.session_state.materiais:
@@ -334,15 +333,13 @@ if st.button("Salvar", type="primary", use_container_width=True):
         else:
             todas_fotos = []
             
-            # 1. Adiciona as fotos de upload
+            # Adiciona as fotos
             if uploaded_files:
                 todas_fotos.extend(uploaded_files)
-                
-            # 2. Adiciona as fotos capturadas
             if st.session_state.fotos_capturadas:
                 todas_fotos.extend(st.session_state.fotos_capturadas)
             
-            # Chama a função para gerar o PDF
+            # 1. Chama a função para gerar o PDF
             pdf_file = create_pdf(
                 data_ocorrencia=data_ocorrencia,
                 tipo_devolucao=tipo_devolucao,
@@ -355,29 +352,28 @@ if st.button("Salvar", type="primary", use_container_width=True):
                 fotos=todas_fotos
             )
             
-            # Oferece o arquivo para download
-            #pdf_b64 = base64.b64encode(pdf_file.getvalue()).decode()
+            # 2. Limpa o estado da sessão ANTES de re-renderizar
+            # A LIMPEZA AGORA É FEITA AQUI, mas o Streamlit só reflete isso
+            # na próxima execução (via rerun).
+            st.session_state.materiais = []
+            st.session_state.fotos_capturadas = []
+            st.session_state["input_material"] = ""
+            st.session_state["input_lote"] = ""
+            st.session_state["input_quantidade"] = 1
+            
+            st.success("Ocorrência registrada!")
+
             nome_arquivo_pdf = f"PEDIDO-{delivery}-TRANSPORTADORA-{transportadora}.pdf" 
+            
             st.download_button(
-               label="Registrar Ocorrência",
-               data=pdf_file,
-               file_name=nome_arquivo_pdf,
-               mime="application/pdf",
-               on_click=clear_form_state
+                label="Registrar Ocorrência",
+                data=pdf_file,
+                file_name=nome_arquivo_pdf,
+                mime="application/pdf",
             )
 
-            # html_download = f"""
-            #     <script>
-            #         var link = document.createElement('a');
-            #         link.setAttribute('href', 'data:application/pdf;base64,{pdf_b64}');
-            #         link.setAttribute('download', '{nome_arquivo_pdf}');
-            #         document.body.appendChild(link);
-            #         link.click();
-            #         document.body.removeChild(link);
-            #     </script>
-            #     """
-            # st.markdown(html_download, unsafe_allow_html=True)
+            if st.button("Nova Ocorrência", type="secondary"):
+                st.rerun()
 
-            st.success("Ocorrência gerada com sucesso!")
     else:
         st.error("Preencha todos os campos obrigatórios da ocorrência antes de registrar.")
