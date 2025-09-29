@@ -87,7 +87,7 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
     pdf.cell(0, 10, "Detalhes da Ocorrência:", ln=1)
     
     # Configurações da tabela de detalhes
-    col_largura = 95  # Largura de cada coluna para a tabela de duas colunas
+    col_largura = 95 # Largura de cada coluna para a tabela de duas colunas
     pdf.set_line_width(0.2)
     
     pdf.set_font("Arial", 'B', 10)
