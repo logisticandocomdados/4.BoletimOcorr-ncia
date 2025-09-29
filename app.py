@@ -22,21 +22,30 @@ class VideoProcessor(VideoProcessorBase):
         # Retorna o frame para ser exibido (se não for retornado, a webcam fica preta)
         return frame
 
+# =========================================================================
+# FUNÇÃO DE LIMPEZA (CALLBACK) - CORRIGIDA
+# =========================================================================
 def clear_form_state():
-    """Limpa os estados do formulário após o download do PDF."""
+    """
+    Limpa todos os campos do formulário salvos no session_state e força um rerun.
+    Isso prepara o formulário para um novo registro.
+    """
+    # 1. Limpa os materiais e fotos adicionadas (session_state listas)
     st.session_state.materiais = []
-    
     st.session_state.fotos_capturadas = []
     
+    # 2. Limpa os campos de input de material (session_state keys)
+    # NOTA: Isso deve limpar os campos "Material", "Lote" e redefinir "Quantidade"
     st.session_state["input_material"] = ""
     st.session_state["input_lote"] = ""
-    st.session_state["input_quantidade"] = 1 # Volta para o valor padrão
-
+    st.session_state["input_quantidade"] = 1 
+    
+    # 3. Força a re-execução para limpar os widgets sem chave (text_input e file_uploader)
+    st.rerun()
 
 def delete_captured_photo(index_to_delete):
     """Remove uma foto da lista de fotos capturadas pelo seu índice."""
     if 0 <= index_to_delete < len(st.session_state.fotos_capturadas):
-        # O método pop(index) remove o item e o retorna (embora não precisemos usá-lo)
         st.session_state.fotos_capturadas.pop(index_to_delete)
         # Não é necessário st.rerun() dentro de um callback, pois o Streamlit fará isso.
 
@@ -78,7 +87,7 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
     pdf.cell(0, 10, "Detalhes da Ocorrência:", ln=1)
     
     # Configurações da tabela de detalhes
-    col_largura = 95  # Largura de cada coluna para a tabela de duas colunas
+    col_largura = 95  # Largura de cada coluna para a tabela de duas colunas
     pdf.set_line_width(0.2)
     
     pdf.set_font("Arial", 'B', 10)
@@ -177,7 +186,6 @@ def create_pdf(data_ocorrencia, tipo_devolucao, transportadora, nota_fiscal, del
                 os.remove(filename)
 
     # O método output retorna o conteúdo do PDF como bytes.
-    # Corrigido o erro de codificação novamente, garantindo que retorne bytes.
     pdf_bytes = pdf.output(dest="S")
     pdf_output = io.BytesIO(pdf_bytes)
     pdf_output.name = "Relatorio_Devolucao.pdf"
@@ -259,6 +267,8 @@ st.title("Devolução Nestle")
 st.header("Detalhes da Ocorrência")
 col1, col2 = st.columns(2)
 with col1:
+    # Nota: text_input, date_input e selectbox SEM 'key' resetam
+    # na re-execução (rerun), o que é ideal para a limpeza.
     data_ocorrencia = st.date_input("Data da Ocorrência", format="DD/MM/YYYY")
     tipo_devolucao = st.selectbox("Tipo de Devolução", ["INSUCESSO","COLETA"])
     transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","JAD LOG","REDE SUL","LOGAN","FAST SERVICE","FAST SHOP", "DIALOGO" ])
@@ -319,11 +329,15 @@ st.markdown("---")
 st.header("Registrar ou Anexar")
 
 # 1. Upload de Arquivos
+# Não possui 'key', será limpo automaticamente no rerun
 uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
 
 # --- Finalizar ---
 st.markdown("---")
+
+# Use um placeholder para o botão de "Nova Ocorrência" para que ele apareça no final
+limpar_placeholder = st.empty()
 
 # Botão para iniciar o processamento e gerar o PDF
 if st.button("Salvar", type="primary", use_container_width=True):
@@ -339,7 +353,7 @@ if st.button("Salvar", type="primary", use_container_width=True):
             if st.session_state.fotos_capturadas:
                 todas_fotos.extend(st.session_state.fotos_capturadas)
             
-            # 1. Chama a função para gerar o PDF
+            # Chama a função para gerar o PDF
             pdf_file = create_pdf(
                 data_ocorrencia=data_ocorrencia,
                 tipo_devolucao=tipo_devolucao,
@@ -352,28 +366,25 @@ if st.button("Salvar", type="primary", use_container_width=True):
                 fotos=todas_fotos
             )
             
-            # 2. Limpa o estado da sessão ANTES de re-renderizar
-            # A LIMPEZA AGORA É FEITA AQUI, mas o Streamlit só reflete isso
-            # na próxima execução (via rerun).
-            st.session_state.materiais = []
-            st.session_state.fotos_capturadas = []
-            st.session_state["input_material"] = ""
-            st.session_state["input_lote"] = ""
-            st.session_state["input_quantidade"] = 1
-            
-            st.success("Ocorrência registrada!")
+            st.success("Ocorrência registrada! Baixe o relatório e clique em 'Nova Ocorrência'.")
 
             nome_arquivo_pdf = f"PEDIDO-{delivery}-TRANSPORTADORA-{transportadora}.pdf" 
             
+            # Exibe o botão de download
             st.download_button(
-                label="Registrar Ocorrência",
+                label="Baixar Relatório (PDF)",
                 data=pdf_file,
                 file_name=nome_arquivo_pdf,
                 mime="application/pdf",
             )
-
-            if st.button("Nova Ocorrência", type="secondary"):
-                st.rerun()
+            
+            with limpar_placeholder:
+                st.button(
+                    "Nova Ocorrência", 
+                    type="secondary", 
+                    use_container_width=True,
+                    on_click=clear_form_state # <--- O CALLBACK DE LIMPEZA E RERUN
+                )
 
     else:
         st.error("Preencha todos os campos obrigatórios da ocorrência antes de registrar.")
