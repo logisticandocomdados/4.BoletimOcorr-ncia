@@ -7,6 +7,14 @@ import av
 import io
 import os
 
+
+# Inicialização do session_state (no topo do script)
+if 'materiais' not in st.session_state:
+    st.session_state.materiais = []
+if 'fotos_capturadas' not in st.session_state:
+    st.session_state.fotos_capturadas = []
+if 'uploaded_photos' not in st.session_state: # Chave para o uploader
+    st.session_state.uploaded_photos = None
 # --- Funções e Classes Auxiliares ---
 
 # Classe Customizada para processar o vídeo e armazenar o último frame
@@ -26,13 +34,11 @@ class VideoProcessor(VideoProcessorBase):
 # FUNÇÃO DE LIMPEZA (CALLBACK) - CORRIGIDA
 # =========================================================================
 def clear_form_state():
-    """
-    Limpa todos os campos do formulário salvos no session_state e força um rerun.
-    Isso prepara o formulário para um novo registro.
-    """
+
     # 1. Limpa os materiais e fotos adicionadas (session_state listas)
     st.session_state.materiais = []
     st.session_state.fotos_capturadas = []
+    st.session_state["uploaded_photos"] = None
     
     # 2. Limpa os campos de input de material (session_state keys)
     # NOTA: Isso deve limpar os campos "Material", "Lote" e redefinir "Quantidade"
@@ -269,7 +275,7 @@ st.header("Registrar ou Anexar")
 
 # 1. Upload de Arquivos
 # Não possui 'key', será limpo automaticamente no rerun
-uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
+uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True, key="uploaded_photos")
 
 st.markdown("---")
 
