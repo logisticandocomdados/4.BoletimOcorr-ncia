@@ -15,6 +15,26 @@ if 'fotos_capturadas' not in st.session_state:
     st.session_state.fotos_capturadas = []
 if 'uploaded_photos' not in st.session_state: # Chave para o uploader
     st.session_state.uploaded_photos = None
+if 'reset_trigger' not in st.session_state: # <--- NOVO: Chave de controle
+    st.session_state.reset_trigger = False
+
+
+if st.session_state.reset_trigger:
+    # 1. Limpa os materiais e fotos adicionadas (Listas)
+    st.session_state.materiais = []
+    st.session_state.fotos_capturadas = []
+    
+    # 2. Reseta o widget de upload (Uploaded Photos)
+    # ESSENCIAL: O st.file_uploader deve ter a key="uploaded_photos"
+    st.session_state["uploaded_photos"] = None 
+    
+    # 3. Limpa os campos de input de material (Keys de Widgets)
+    st.session_state["input_material"] = ""
+    st.session_state["input_lote"] = ""
+    st.session_state["input_quantidade"] = 1
+    
+    # 4. Desativa a flag para o próximo uso
+    st.session_state.reset_trigger = False
 # --- Funções e Classes Auxiliares ---
 
 # Classe Customizada para processar o vídeo e armazenar o último frame
@@ -34,18 +54,7 @@ class VideoProcessor(VideoProcessorBase):
 # FUNÇÃO DE LIMPEZA (CALLBACK) - CORRIGIDA
 # =========================================================================
 def clear_form_state():
-
-    # 1. Limpa os materiais e fotos adicionadas (session_state listas)
-    st.session_state.materiais = []
-    st.session_state.fotos_capturadas = []
-
-    # 2. Limpa os campos de input de material (session_state keys)
-    # NOTA: Isso deve limpar os campos "Material", "Lote" e redefinir "Quantidade"
-    st.session_state["input_material"] = ""
-    st.session_state["input_lote"] = ""
-    st.session_state["input_quantidade"] = 1 
-    
-    # 3. Força a re-execução para limpar os widgets sem chave (text_input e file_uploader)
+    st.session_state.reset_trigger = True
     st.rerun()
 
 def delete_captured_photo(index_to_delete):
