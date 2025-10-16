@@ -38,8 +38,7 @@ def clear_form_state():
     # 1. Limpa os materiais e fotos adicionadas (session_state listas)
     st.session_state.materiais = []
     st.session_state.fotos_capturadas = []
-    st.session_state["uploaded_photos"] = None
-    
+
     # 2. Limpa os campos de input de material (session_state keys)
     # NOTA: Isso deve limpar os campos "Material", "Lote" e redefinir "Quantidade"
     st.session_state["input_material"] = ""
