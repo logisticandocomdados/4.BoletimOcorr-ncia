@@ -1,7 +1,10 @@
 pandas
 fpdf2
+fpdf
 Pillow
 streamlit-webrtc
-av  <--- NOVO: Essencial para o vídeo!
+av
+io
+os
 streamlit
 numpy
