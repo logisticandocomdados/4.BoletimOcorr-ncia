@@ -1,10 +1,6 @@
 pandas
 fpdf2
-fpdf
 Pillow
 streamlit-webrtc
 av
-io
-os
-streamlit
-numpy
+streamlit>=1.27
