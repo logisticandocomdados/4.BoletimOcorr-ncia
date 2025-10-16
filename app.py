@@ -271,6 +271,7 @@ st.header("Registrar ou Anexar")
 # Não possui 'key', será limpo automaticamente no rerun
 uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
+st.markdown("---")
 
 # --- Campos de dados da ocorrência ---
 st.header("Detalhes da Ocorrência")
