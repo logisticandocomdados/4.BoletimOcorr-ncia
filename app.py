@@ -263,6 +263,15 @@ h1 {
 
 st.title("Devolução Nestle")
 
+# --- Anexar Fotos ---
+st.markdown("---")
+st.header("Registrar ou Anexar")
+
+# 1. Upload de Arquivos
+# Não possui 'key', será limpo automaticamente no rerun
+uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
+
+
 # --- Campos de dados da ocorrência ---
 st.header("Detalhes da Ocorrência")
 col1, col2 = st.columns(2)
@@ -322,16 +331,6 @@ if st.session_state.materiais:
     st.session_state.materiais = edited_df.to_dict('records')
 else:
     st.info("Nenhum material adicionado ainda.")
-
-
-# --- Anexar Fotos ---
-st.markdown("---")
-st.header("Registrar ou Anexar")
-
-# 1. Upload de Arquivos
-# Não possui 'key', será limpo automaticamente no rerun
-uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
-
 
 # --- Finalizar ---
 st.markdown("---")
