@@ -271,7 +271,7 @@ with col1:
     # na re-execução (rerun), o que é ideal para a limpeza.
     data_ocorrencia = st.date_input("Data da Ocorrência", format="DD/MM/YYYY")
     tipo_devolucao = st.selectbox("Tipo de Devolução", ["INSUCESSO","COLETA"])
-    transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","JAD LOG","REDE SUL","LOGAN","FAST SERVICE","FAST SHOP", "DIALOGO" ])
+    transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","J&T","JAD LOG","REDE SUL","LOGAN","FAST SERVICE","FAST SHOP", "DIALOGO" , "FAVELA LOG"])
     nota_fiscal = st.text_input("Nota Fiscal")
 with col2:
     pedido = st.text_input("Pedido")
@@ -340,7 +340,7 @@ st.markdown("---")
 limpar_placeholder = st.empty()
 
 # Botão para iniciar o processamento e gerar o PDF
-if st.button("Salvar", type="primary", use_container_width=True):
+if st.button("Registrar", type="primary", use_container_width=True):
     if data_ocorrencia and tipo_devolucao and transportadora and nota_fiscal and pedido and delivery and rastreio:
         if not st.session_state.materiais:
             st.error("Adicione pelo menos um material à ocorrência.")
@@ -372,7 +372,7 @@ if st.button("Salvar", type="primary", use_container_width=True):
             
             # Exibe o botão de download
             st.download_button(
-                label="Baixar Relatório (PDF)",
+                label="Salvar",
                 data=pdf_file,
                 file_name=nome_arquivo_pdf,
                 mime="application/pdf",
