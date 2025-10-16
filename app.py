@@ -48,7 +48,6 @@ class VideoProcessor(VideoProcessorBase):
 # FUNÇÃO DE LIMPEZA (CALLBACK) - CORRIGIDA
 # =========================================================================
 def clear_form_state():
-    st.session_state.reset_trigger = True
     st.rerun()
 
 def delete_captured_photo(index_to_delete):
