@@ -366,7 +366,7 @@ if st.button("Registrar", type="primary", use_container_width=True):
                 fotos=todas_fotos
             )
             
-            st.success("Ocorrência registrada! Baixe o relatório e clique em 'Nova Ocorrência'.")
+            st.success("Ocorrência registrada! Salve o relatório e clique em 'Nova Ocorrência'.")
 
             nome_arquivo_pdf = f"PEDIDO-{delivery}-TRANSPORTADORA-{transportadora}.pdf" 
             
@@ -377,14 +377,13 @@ if st.button("Registrar", type="primary", use_container_width=True):
                 file_name=nome_arquivo_pdf,
                 mime="application/pdf",
             )
-            
-            with limpar_placeholder:
-                st.button(
-                    "Nova Ocorrência", 
-                    type="secondary", 
-                    use_container_width=True,
-                    on_click=clear_form_state # <--- O CALLBACK DE LIMPEZA E RERUN
-                )
 
     else:
         st.error("Preencha todos os campos obrigatórios da ocorrência antes de registrar.")
+
+st.button(
+    "Nova Ocorrência", 
+    type="secondary", 
+    use_container_width=True,
+    on_click=clear_form_state
+)
