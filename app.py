@@ -271,7 +271,7 @@ with col1:
     # na re-execução (rerun), o que é ideal para a limpeza.
     data_ocorrencia = st.date_input("Data da Ocorrência", format="DD/MM/YYYY")
     tipo_devolucao = st.selectbox("Tipo de Devolução", ["INSUCESSO","COLETA"])
-    transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","J&T","JAD LOG","REDE SUL","LOGAN","FAST SERVICE","FAST SHOP", "DIALOGO" , "FAVELA LOG"])
+    transportadora = st.selectbox("Transportadora", ["CORREIOS","DISSUDES","J&T","JAD LOG","REDE SUL","LOGAN","DIALOGO" , "FAVELA LOG","SAC SERVICE","FAST SERVICE","FAST SHOP"])
     nota_fiscal = st.text_input("Nota Fiscal")
 with col2:
     pedido = st.text_input("Pedido")
