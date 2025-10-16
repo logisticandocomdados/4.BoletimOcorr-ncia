@@ -13,8 +13,6 @@ if 'materiais' not in st.session_state:
     st.session_state.materiais = []
 if 'fotos_capturadas' not in st.session_state:
     st.session_state.fotos_capturadas = []
-if 'uploaded_photos' not in st.session_state: # Chave para o uploader
-    st.session_state.uploaded_photos = None
 if 'reset_trigger' not in st.session_state: # <--- NOVO: Chave de controle
     st.session_state.reset_trigger = False
 
@@ -23,11 +21,7 @@ if st.session_state.reset_trigger:
     # 1. Limpa os materiais e fotos adicionadas (Listas)
     st.session_state.materiais = []
     st.session_state.fotos_capturadas = []
-    
-    # 2. Reseta o widget de upload (Uploaded Photos)
-    # ESSENCIAL: O st.file_uploader deve ter a key="uploaded_photos"
-    st.session_state["uploaded_photos"] = None 
-    
+
     # 3. Limpa os campos de input de material (Keys de Widgets)
     st.session_state["input_material"] = ""
     st.session_state["input_lote"] = ""
@@ -283,7 +277,7 @@ st.header("Registrar ou Anexar")
 
 # 1. Upload de Arquivos
 # Não possui 'key', será limpo automaticamente no rerun
-uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True, key="uploaded_photos")
+uploaded_files = st.file_uploader("Registre novas fotos ou escolha fotos da galeria para upload...", type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
 st.markdown("---")
 
